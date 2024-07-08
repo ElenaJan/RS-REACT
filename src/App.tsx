@@ -1,122 +1,92 @@
-import { Component } from 'react'
-import Search from './components/Search'
-import Results from './components/Results'
-import ErrorBoundary from './components/ErrorBoundary'
-import Loader from './components/Loader'
-import './App.css'
+import React, { useState, useEffect, useCallback } from 'react';
+import Search from './components/Search';
+import Results from './components/Results';
+import ErrorBoundary from './components/ErrorBoundary';
+import Loader from './components/Loader';
+import './App.css';
 
 interface Result {
-    name: string
-    description: string
+    name: string;
+    description: string;
 }
 
-interface AppState {
-    results: Result[]
-    loading: boolean
-    error: Error | null
-    testError: boolean
-}
+const App: React.FC = () => {
+    const [results, setResults] = useState<Result[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [testError, setTestError] = useState<boolean>(false);
 
-class App extends Component<Record<string, never>, AppState> {
-    state: AppState = {
-        results: [],
-        loading: false,
-        error: null,
-        testError: false,
-    }
-
-    componentDidMount() {
-        const searchTerm = localStorage.getItem('searchTerm') || ''
-        this.fetchResults(searchTerm)
-    }
-
-    fetchResults = (searchTerm: string) => {
-        this.setState({ loading: true })
+    const fetchResults = useCallback((searchTerm: string) => {
+        setLoading(true);
         const url = searchTerm
             ? `https://pokeapi.co/api/v2/pokemon/${searchTerm}`
-            : `https://pokeapi.co/api/v2/pokemon?limit=20`
+            : `https://pokeapi.co/api/v2/pokemon?limit=20`;
 
         fetch(url)
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error(
-                        'Something went wrong! Network response was not ok!',
-                    )
+                    throw new Error('Something went wrong! Network response was not ok!');
                 }
-                return response.json()
+                return response.json();
             })
             .then((data) => {
                 if (searchTerm) {
-                    this.setState({
-                        results: [
-                            {
-                                name: data.name,
-                                description: `Height: ${data.height}, Weight: ${data.weight}`,
-                            },
-                        ],
-                        loading: false,
-                    })
+                    setResults([{
+                        name: data.name,
+                        description: `Height: ${data.height}, Weight: ${data.weight}`,
+                    }]);
                 } else {
                     const results = data.results.map(
                         (item: { name: string; url: string }) => ({
                             name: item.name,
                             description: item.url,
                         }),
-                    )
-                    this.setState({ results, loading: false })
+                    );
+                    setResults(results);
                 }
+                setLoading(false);
             })
-            .catch((error) => this.setState({ error, loading: false }))
-    }
+            .catch((error) => {
+                setError(error);
+                setLoading(false);
+            });
+    }, []);
 
-    handleSearch = (searchTerm: string) => {
-        this.fetchResults(searchTerm)
-    }
+    useEffect(() => {
+        const searchTerm = localStorage.getItem('searchTerm') || '';
+        fetchResults(searchTerm);
+    }, [fetchResults]);
 
-    throwError = () => {
-        this.setState({ testError: true })
-        throw new Error('This is test error!')
-    }
+    const handleSearch = (searchTerm: string) => {
+        fetchResults(searchTerm);
+    };
 
-    render() {
-        const { results, loading, error, testError } = this.state
+    const throwError = () => {
+        setTestError(true);
+        throw new Error('This is a test error!');
+    };
 
-        return (
-            <ErrorBoundary>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100vh',
-                    }}
-                >
-                    <div className="search-wrapper">
-                        <Search onSearch={this.handleSearch} />
-                        <button className="error-btn" onClick={this.throwError}>
-                            Throw Error
-                        </button>
-                    </div>
-                    <div
-                        style={{
-                            flex: '1 1 80%',
-                            overflowY: 'auto',
-                            padding: '10px',
-                        }}
-                    >
-                        {loading ? (
-                            <Loader />
-                        ) : error ? (
-                            <p>Error loading results: {error.message}</p>
-                        ) : testError ? (
-                            <p>Test error</p>
-                        ) : (
-                            <Results results={results} />
-                        )}
-                    </div>
+    return (
+        <ErrorBoundary>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+                <div className="search-wrapper">
+                    <Search onSearch={handleSearch} />
+                    <button className="error-btn" onClick={throwError}>Throw Error</button>
                 </div>
-            </ErrorBoundary>
-        )
-    }
-}
+                <div style={{ flex: '1 1 80%', overflowY: 'auto', padding: '10px' }}>
+                    {loading ? (
+                        <Loader />
+                    ) : error ? (
+                        <p>Error loading results: {error.message}</p>
+                    ) : testError ? (
+                        <p>Test error</p>
+                    ) : (
+                        <Results results={results} />
+                    )}
+                </div>
+            </div>
+        </ErrorBoundary>
+    );
+};
 
-export default App
+export default App;
