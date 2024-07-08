@@ -1,12 +1,12 @@
-import  { FC } from 'react';
+import { FC } from 'react'
 
 interface Result {
-    name: string;
-    description: string;
+    name: string
+    description: string
 }
 
 interface ResultsProps {
-    results: Result[];
+    results: Result[]
 }
 
 const Results: FC<ResultsProps> = ({ results }) => {
@@ -25,7 +25,7 @@ const Results: FC<ResultsProps> = ({ results }) => {
                 ))
             )}
         </div>
-    );
-};
+    )
+}
 
-export default Results;
+export default Results

@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import './Loader.css';
+import { FC } from 'react'
+import './Loader.css'
 
 const Loader: FC = () => {
-    return <div className="spinner"></div>;
-};
+    return <div className="spinner"></div>
+}
 
-export default Loader;
+export default Loader
