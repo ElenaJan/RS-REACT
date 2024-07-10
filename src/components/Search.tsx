@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent } from 'react'
 
 interface SearchProps {
     onSearch: (searchTerm: string) => void
@@ -9,22 +9,17 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
         () => localStorage.getItem('searchTerm') || '',
     )
 
-    useEffect(() => {
-        localStorage.setItem('searchTerm', searchTerm)
-    }, [searchTerm])
-
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value)
     }
 
     const handleSearch = (): void => {
         const trimmedSearchTerm: string = searchTerm.trim()
-        localStorage.setItem('searchTerm', trimmedSearchTerm)
         onSearch(trimmedSearchTerm)
     }
 
     return (
-        <div>
+        <div className="search-container">
             <input
                 type="text"
                 value={searchTerm}

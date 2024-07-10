@@ -42,3 +42,20 @@
 .error-btn {
     margin-top: 1rem;
 }
+
+.results-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+.results {
+    height: calc(100vh - 22rem);
+    width: 20rem;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.details {
+    position: absolute;
+    top: 10rem;
+    right: 15rem;
+}
