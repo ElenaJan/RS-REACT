@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import Loader from './Loader.tsx'
 
 interface DetailsProps {
     itemName: string
@@ -6,30 +7,35 @@ interface DetailsProps {
 
 const Details: React.FC<DetailsProps> = ({ itemName, onClose }) => {
     const [item, setItem] = useState({ name: itemName })
-    const fetchInfo = async () => {
-        const url: string = `https://pokeapi.co/api/v2/pokemon/${itemName}`
+    const [loading, setLoading] = useState(false)
 
-        fetch(url)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(
-                        'Something went wrong! Network response was not ok!',
-                    )
-                }
-                return response.json()
-            })
-            .then((data) => {
-                setItem({
-                    name: data.name,
-                    height: data.height,
-                    weight: data.weight,
-                })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
     useEffect(() => {
+        const fetchInfo = async () => {
+            setLoading(true)
+            const url: string = `https://pokeapi.co/api/v2/pokemon/${itemName}`
+
+            fetch(url)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(
+                            'Something went wrong! Network response was not ok!',
+                        )
+                    }
+                    return response.json()
+                })
+                .then((data) => {
+                    setItem({
+                        name: data.name,
+                        height: data.height,
+                        weight: data.weight,
+                    })
+                    setLoading(false)
+                })
+                .catch((error) => {
+                    setLoading(false)
+                    console.log(error)
+                })
+        }
         fetchInfo()
     }, [itemName])
 
@@ -39,6 +45,7 @@ const Details: React.FC<DetailsProps> = ({ itemName, onClose }) => {
     return (
         <div className="details">
             <h2>Details for {item.name}</h2>
+            {loading && <Loader />}
             {item?.height && <p>Height: {item?.height}</p>}
             {item?.weight && <p>Weight: {item?.weight}</p>}
             <button onClick={closeInfo}>Close</button>

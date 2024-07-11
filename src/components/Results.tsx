@@ -18,53 +18,52 @@ const Results: React.FC = (props) => {
     const location = useLocation()
     const navigate = useNavigate()
 
-    const fetchResults = (page: number) => {
-        setLoading(true)
-        let url: string = `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${(page - 1) * 20}`
-
-        if (props.search) {
-            url = `https://pokeapi.co/api/v2/pokemon/${props.search}`
-        }
-
-        fetch(url)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(
-                        'Something went wrong! Network response was not ok!',
-                    )
-                }
-                return response.json()
-            })
-            .then((data) => {
-                if (!props.search) {
-                    const results = data.results.map(
-                        (item: { name: string; url: string }) => ({
-                            name: item.name,
-                            description: item.url,
-                        }),
-                    )
-                    setResults(results)
-                    setTotalPages(Math.ceil(data.count / 20))
-                } else {
-                    const results = [
-                        {
-                            name: data.name,
-                            description: data.description,
-                        },
-                    ]
-                    setResults(results)
-                }
-                setLoading(false)
-            })
-            .catch((error) => {
-                setError(error)
-                setLoading(false)
-            })
-    }
-
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search)
         const page = parseInt(searchParams.get('page') || '1', 10)
+        const fetchResults = (page: number) => {
+            setLoading(true)
+            let url: string = `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${(page - 1) * 20}`
+
+            if (props.search) {
+                url = `https://pokeapi.co/api/v2/pokemon/${props.search}`
+            }
+
+            fetch(url)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(
+                            'Something went wrong! Network response was not ok!',
+                        )
+                    }
+                    return response.json()
+                })
+                .then((data) => {
+                    if (!props.search) {
+                        const results = data.results.map(
+                            (item: { name: string; url: string }) => ({
+                                name: item.name,
+                                description: item.url,
+                            }),
+                        )
+                        setResults(results)
+                        setTotalPages(Math.ceil(data.count / 20))
+                    } else {
+                        const results = [
+                            {
+                                name: data.name,
+                                description: data.description,
+                            },
+                        ]
+                        setResults(results)
+                    }
+                    setLoading(false)
+                })
+                .catch((error) => {
+                    setError(error)
+                    setLoading(false)
+                })
+        }
         if (props.search) {
             fetchResults(1)
         } else {
