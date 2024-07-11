@@ -25,6 +25,7 @@ const App: React.FC = () => {
                     height: '100vh',
                 }}
             >
+                <h1 className="title">React Pokemon</h1>
                 <div className="search-wrapper">
                     <Search onSearch={handleSearch} />
                 </div>

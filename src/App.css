@@ -48,7 +48,7 @@
     justify-content: space-between;
 }
 .results {
-    height: calc(100vh - 22rem);
+    height: calc(100vh - 25rem);
     width: 20rem;
     overflow-y: auto;
     margin-bottom: 1rem;
@@ -56,6 +56,6 @@
 
 .details {
     position: absolute;
-    top: 10rem;
+    top: 11rem;
     right: 15rem;
 }

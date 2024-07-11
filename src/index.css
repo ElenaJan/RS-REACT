@@ -127,7 +127,7 @@ button:focus-visible {
 
 .search-wrapper {
     border-bottom: 1px solid gray;
-    padding: 4rem 0rem 2rem;
+    padding: 1rem 0rem 2rem;
 }
 
 .search-wrapper input {
@@ -160,4 +160,7 @@ button:focus-visible {
 
 .error-btn {
     margin-top: 1rem;
+}
+.title {
+    margin-bottom: 0;
 }
