@@ -12,7 +12,6 @@ const App: React.FC = () => {
     const [searchTerm, setSearchTerm] = usePersistentSearch('searchTerm')
 
     const handleSearch = (searchTerm: string) => {
-        console.log(searchTerm)
         setSearchTerm(searchTerm)
     }
 
