@@ -32,9 +32,13 @@ const Results: React.FC = (props) => {
             fetch(url)
                 .then((response) => {
                     if (!response.ok) {
-                        throw new Error(
-                            'Something went wrong! Network response was not ok!',
-                        )
+                        if (response.status === 404) {
+                            throw new Error('No cards available!')
+                        } else {
+                            throw new Error(
+                                'Something went wrong! Network response was not ok!',
+                            )
+                        }
                     }
                     return response.json()
                 })
@@ -60,6 +64,7 @@ const Results: React.FC = (props) => {
                     setLoading(false)
                 })
                 .catch((error) => {
+                    console.log(error)
                     setError(error)
                     setLoading(false)
                 })
